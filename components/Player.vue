@@ -12,7 +12,7 @@ const props = defineProps<{
 const { activeRun } = useRun()
 
 const runner = computed<RunDataPlayer | undefined>(() => activeRun.value?.teams?.[props.player]?.players?.[0])
-const seed = ref<Number>(16) // TODO
+const seed = computed<Number>(() => parseInt(runner.value?.country ?? "16"))
 </script>
 
 <template>
