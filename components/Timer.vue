@@ -12,6 +12,7 @@ const props = defineProps<{
 
 const { activeRun } = useRun()
 const { timer } = useTimer()
+const timeStr = computed<String>(() => (timer.value?.time ?? "00:00:00").substring(1))
 
 const active = computed<Boolean>(() => {
 	if (props.player === undefined) return true
@@ -41,7 +42,7 @@ const winState = computed<"win" | "loss" | undefined>(() => {
 	<div class="another-container">
 		<div class="timer"
 			:class="[{ 'timer-out': !inline, 'timer-inline': inline, 'timer-hide': !active }, alignment ? `timer-${alignment}` : '', winState ? `timer-${winState}` : '']">
-			<p class="nested" :class="{ 'nested-inline': inline }">{{ timer?.time }}</p> <!-- TODO: add a default -->
+			<p class="nested" :class="{ 'nested-inline': inline }">{{ timeStr }}</p> <!-- TODO: add a default -->
 		</div>
 	</div>
 </template>

@@ -6,9 +6,8 @@ export function useTimer() {
 	const timer = ref<Timer | undefined>()
 
 	function setActiveTimer(newVal: Timer | undefined, oldVal: Timer | undefined) {
-		if (newVal) {
-			timer.value = newVal
-		}
+		if (!newVal) return
+		timer.value = { ...newVal }
 	}
 
 	let listener: ReplicantBrowser<Timer>

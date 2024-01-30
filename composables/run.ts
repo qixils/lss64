@@ -6,9 +6,8 @@ export function useRun() {
 	const activeRun = ref<RunDataActiveRun>()
 
 	function setActiveRun(newVal: RunDataActiveRun, oldVal: RunDataActiveRun) {
-		if (newVal) {
-			activeRun.value = newVal
-		}
+		if (!newVal) return
+		activeRun.value = { ...newVal }
 	}
 
 	let listener: ReplicantBrowser<RunDataActiveRun>
