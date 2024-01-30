@@ -1,0 +1,38 @@
+{
+  "name": "lss64",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt build --prerender --log-level verbose",
+    "start": "node ../..",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare"
+  },
+  "dependencies": {
+    "nodecg-speedcontrol": "file:../nodecg-speedcontrol"
+  },
+  "devDependencies": {
+    "nuxt": "^3.9.3",
+    "vue": "^3.4.14",
+    "vue-router": "^4.2.5"
+  },
+  "overrides": {
+    "@parcel/watcher": "2.1.0"
+  },
+  "nodecg": {
+    "compatibleRange": "^1.5.0",
+    "bundleDependencies": {
+      "nodecg-speedcontrol": "^2.0.0"
+    },
+    "graphics": [
+      {
+        "file": "2p.html",
+        "width": 1920,
+        "height": 1080
+      }
+    ]
+  }
+}
