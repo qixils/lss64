@@ -4,11 +4,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "nuxt build",
-    "dev": "nuxt dev",
-    "generate": "nuxt build --prerender --log-level verbose",
+    "build": "nuxt build --prerender",
     "start": "node ../..",
-    "preview": "nuxt preview",
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
