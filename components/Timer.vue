@@ -12,7 +12,16 @@ const props = defineProps<{
 
 const { activeRun } = useRun()
 const { timer } = useTimer()
-const timeStr = computed<String>(() => (timer.value?.time ?? "00:00:00").substring(1))
+const timeStr = computed<String>(() => {
+	let time: {time: String} | undefined = timer.value
+	if (props.player !== undefined && activeRun.value && timer.value) {
+		const team = activeRun.value.teams[props.player]
+		if (team.id in timer.value.teamFinishTimes) {
+			time = timer.value.teamFinishTimes[team.id]
+		}
+	}
+	return (time?.time ?? "00:00:00").substring(1)
+})
 
 const active = computed<Boolean>(() => {
 	if (props.player === undefined) return true
@@ -30,10 +39,10 @@ const winState = computed<"win" | "loss" | undefined>(() => {
 
 	const team = activeRun.value.teams[props.player]
 	const time = timer.value.teamFinishTimes[team.id]
+	if (!time || time.state === "forfeit") return "loss"
 	const opponent = activeRun.value.teams[(props.player % 2 === 0) ? (props.player + 1) : (props.player - 1)]
 	const oppTime = timer.value.teamFinishTimes[opponent.id]
 	if (!oppTime || oppTime.state === "forfeit") return "win"
-	if (!time || time.state === "forfeit") return "loss"
 	return time.milliseconds < oppTime.milliseconds ? "win" : "loss"
 })
 </script>
