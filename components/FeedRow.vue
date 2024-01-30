@@ -3,7 +3,8 @@ import Timer from './Timer.vue';
 import Player from './Player.vue';
 
 const props = defineProps<{
-	firstPlayer: number
+	firstPlayer: number,
+	timer: boolean,
 }>()
 </script>
 
@@ -19,8 +20,8 @@ const props = defineProps<{
 		</div>
 		<div class="bar">
 			<Player class="player" :player="firstPlayer" />
-			<Timer />
-			<Player class="player" :player="firstPlayer + 1" />
+			<Timer v-if="timer" />
+			<Player class="player" :player="firstPlayer + 1" alignment="right" />
 		</div>
 	</div>
 </template>
@@ -41,7 +42,7 @@ const props = defineProps<{
 
 .bar {
 	display: flex;
-	flex-direction: row nowrap;
+	flex-flow: row nowrap;
 	height: 4em;
 }
 

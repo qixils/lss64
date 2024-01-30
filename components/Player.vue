@@ -14,7 +14,7 @@ const runner = computed<RunDataPlayer | undefined>(() => activeRun.value?.teams?
 </script>
 
 <template>
-	<div class="wrapper">
+	<div class="wrapper" :class="{ reverse: alignment === 'right' }">
 		<p class="seed">16</p> <!-- TODO -->
 		<p class="player" :class="{ right: alignment === 'right' }">
 			{{ runner?.name ?? 'Player' }}
@@ -27,27 +27,35 @@ const runner = computed<RunDataPlayer | undefined>(() => activeRun.value?.teams?
 
 <style scoped>
 .seed {
-	background-color: rgba(50, 50, 50, 0.8);
+	background-color: #1c1c1ccc;
 	text-align: center;
-	vertical-align: middle;
-	width: 1.5em;
-	font-size: 2em;
-	height: 100%;
+	width: 1.4rem;
+	font-size: 1.85rem;
+	margin: 0;
+	padding: 0;
 }
 
 .player {
-	background-color: rgba(150, 150, 150, 0.8);
+	background-color: #565656cc;
 	flex-grow: 1;
-	font-size: 2em;
-	height: 100%;
+	font-size: 1.85rem;
+	margin: 0;
+	padding: 0 0.2rem;
 }
 
 .right {
-	text-align: right;
+	text-align: end;
 }
 
 .wrapper {
 	display: flex;
 	flex-flow: row nowrap;
+	height: 100%;
+	margin: 0;
+	padding: 0;
+}
+
+.reverse {
+	flex-flow: row-reverse nowrap !important;
 }
 </style>

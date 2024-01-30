@@ -8,9 +8,15 @@ const { activeRun } = useRun()
 <template>
 	<div>
 		<p class="round">{{ activeRun?.category || "Unknown Round" }}</p>
-		<FeedRow :first-player="1" />
+		<FeedRow :first-player="0" :timer="true" />
 	</div>
 </template>
+
+<style>
+	p {
+		color: white;
+	}
+</style>
 
 <style scoped>
 .round {

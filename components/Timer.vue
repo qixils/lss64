@@ -37,22 +37,37 @@ const winState = computed<"win" | "loss" | undefined>(() => {
 </script>
 
 <template>
-	<p class="timer"
-		:class="[{ 'timer-inline': inline, 'timer-hide': !active }, alignment ? `timer-${alignment}` : '', winState ? `timer-${winState}` : '']">
-		{{ timer?.time }} <!-- TODO: add a default -->
-	</p>
+	<div class="another-container">
+		<div class="timer"
+			:class="[{ 'timer-out': !inline, 'timer-inline': inline, 'timer-hide': !active }, alignment ? `timer-${alignment}` : '', winState ? `timer-${winState}` : '']">
+			<p class="nested">{{ timer?.time }}</p> <!-- TODO: add a default -->
+		</div>
+	</div>
 </template>
 
 <style scoped>
-.timer {
-	background-color: rgba(100, 100, 100, 0.8);
-	font-size: 2em;
+.another-container {
+	margin: 0;
+	padding: 0;
 	height: 100%;
+	display: flex;
+	flex-flow: column nowrap;
+	justify-content: flex-end;
+}
+
+.timer {
+	background-color: #2e2e2ecc;
+	font-size: 2rem;
 	transition: opacity 0.2s;
+	width: fit-content;
 }
 
 .timer-hide {
 	opacity: 0;
+}
+
+.timer-out {
+	height: 100%;
 }
 
 .timer-inline {
@@ -76,5 +91,10 @@ const winState = computed<"win" | "loss" | undefined>(() => {
 
 .timer-loss {
 	background-color: rgba(220, 0, 0, 0.8);
+}
+
+.nested {
+	margin: 0;
+	padding: 0.1rem 0.1rem;
 }
 </style>
