@@ -4,6 +4,7 @@ import { useRun } from '../composables/run';
 import type { RunDataPlayer } from '../../nodecg-speedcontrol/src/types';
 
 const props = defineProps<{
+	scale: number,
 	player: number,
 	alignment?: "left" | "right",
 }>()
@@ -11,51 +12,36 @@ const props = defineProps<{
 const { activeRun } = useRun()
 
 const runner = computed<RunDataPlayer | undefined>(() => activeRun.value?.teams?.[props.player]?.players?.[0])
+const seed = ref<Number>(16) // TODO
 </script>
 
 <template>
-	<div class="wrapper" :class="{ reverse: alignment === 'right' }">
-		<p class="seed">16</p> <!-- TODO -->
-		<p class="player" :class="{ right: alignment === 'right' }">
-			{{ runner?.name ?? 'Player' }}
-			<span v-if="runner?.pronouns">
-				({{ runner.pronouns }})
-			</span>
-		</p>
-	</div>
+	<p v-if="alignment !== 'right'" class="seed">{{ seed }}</p>
+	<p class="player" :class="{ right: alignment === 'right' }">
+		{{ runner?.name ?? 'Player' }}
+		<span v-if="runner?.pronouns">
+			({{ runner.pronouns }})
+		</span>
+	</p>
+	<p v-if="alignment === 'right'" class="seed">{{ seed }}</p>
 </template>
 
 <style scoped>
 .seed {
 	background-color: #1c1c1ccc;
 	text-align: center;
-	width: 1.4rem;
-	font-size: 1.85rem;
+	width: calc(5.5rem * v-bind(scale));
 	margin: 0;
 	padding: 0;
 }
 
 .player {
 	background-color: #565656cc;
-	flex-grow: 1;
-	font-size: 1.85rem;
 	margin: 0;
-	padding: 0 0.2rem;
+	padding: 0 calc(1rem * v-bind(scale));
 }
 
 .right {
 	text-align: end;
-}
-
-.wrapper {
-	display: flex;
-	flex-flow: row nowrap;
-	height: 100%;
-	margin: 0;
-	padding: 0;
-}
-
-.reverse {
-	flex-flow: row-reverse nowrap !important;
 }
 </style>

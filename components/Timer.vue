@@ -4,6 +4,7 @@ import { useRun } from '../composables/run';
 import { useTimer } from '../composables/timer';
 
 const props = defineProps<{
+	scale: number,
 	player?: number,
 	inline?: boolean,
 	alignment?: "left" | "right",
@@ -13,7 +14,7 @@ const { activeRun } = useRun()
 const { timer } = useTimer()
 
 const active = computed<Boolean>(() => {
-	if (!props.player) return true
+	if (props.player === undefined) return true
 	if (!activeRun.value) return false
 	if (!timer.value) return false
 
@@ -22,7 +23,7 @@ const active = computed<Boolean>(() => {
 })
 
 const winState = computed<"win" | "loss" | undefined>(() => {
-	if (!props.player) return undefined
+	if (props.player === undefined) return undefined
 	if (!activeRun.value) return undefined
 	if (!timer.value) return undefined
 
@@ -40,7 +41,7 @@ const winState = computed<"win" | "loss" | undefined>(() => {
 	<div class="another-container">
 		<div class="timer"
 			:class="[{ 'timer-out': !inline, 'timer-inline': inline, 'timer-hide': !active }, alignment ? `timer-${alignment}` : '', winState ? `timer-${winState}` : '']">
-			<p class="nested">{{ timer?.time }}</p> <!-- TODO: add a default -->
+			<p class="nested" :class="{ 'nested-inline': inline }">{{ timer?.time }}</p> <!-- TODO: add a default -->
 		</div>
 	</div>
 </template>
@@ -57,9 +58,10 @@ const winState = computed<"win" | "loss" | undefined>(() => {
 
 .timer {
 	background-color: #2e2e2ecc;
-	font-size: 2rem;
 	transition: opacity 0.2s;
 	width: fit-content;
+	font-family: 'Ubuntu Mono';
+	font-size: calc(4.3rem * v-bind(scale));
 }
 
 .timer-hide {
@@ -95,6 +97,12 @@ const winState = computed<"win" | "loss" | undefined>(() => {
 
 .nested {
 	margin: 0;
-	padding: 0.1rem 0.1rem;
+	padding-left: calc(1rem * v-bind(scale));
+	padding-right: calc(1rem * v-bind(scale));
+}
+
+.nested-inline {
+	padding-top: calc(0.5rem * v-bind(scale));
+	padding-bottom: calc(0.5rem * v-bind(scale));
 }
 </style>
