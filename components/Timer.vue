@@ -54,7 +54,7 @@ const winState = computed<"win" | "loss" | undefined>(() => {
 <template>
 	<div class="another-container">
 		<div class="timer"
-			:class="[{ 'timer-out': !inline, 'timer-inline': inline, 'timer-hide': !active, 'manual-size': !dynamicWidth }, alignment ? `timer-${alignment}` : '', winState ? `timer-${winState}` : '']">
+			:class="[{ 'timer-out': !inline, 'timer-inline': inline, 'timer-hide': !active, 'manual-size': !dynamicWidth }, alignment ? `timer-${alignment}` : '', winState ? `timer-${winState}` : '', (player === undefined) ? `timer-state-${timer?.state ?? 'stopped'}` : '' ]">
 			<p class="nested" :class="{ 'nested-inline': inline }">{{ timeStr }}</p> <!-- TODO: add a default -->
 		</div>
 	</div>
@@ -122,5 +122,13 @@ const winState = computed<"win" | "loss" | undefined>(() => {
 .nested-inline {
 	padding-top: calc(0.5rem * v-bind(scale));
 	padding-bottom: calc(0.5rem * v-bind(scale));
+}
+
+.timer-state-stopped, .timer-state-paused {
+	color: #ccc;
+}
+
+.timer-state-finished {
+	color: #adffb2;
 }
 </style>
