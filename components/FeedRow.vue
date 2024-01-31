@@ -38,7 +38,7 @@ const props = defineProps<{
 	display: block;
 	/*background-color: black;*/
 	aspect-ratio: 4 / 3;
-	width: calc(320px * 4);
+	width: 50%;
 }
 
 .bar {

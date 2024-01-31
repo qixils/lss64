@@ -8,7 +8,11 @@ const props = defineProps<{
 	player?: number,
 	inline?: boolean,
 	alignment?: "left" | "right",
+	bgColor?: string,
+	dynamicWidth?: boolean,
 }>()
+
+const bgColorDef = computed<String>(() => props.bgColor ?? "#2e2e2ecc" )
 
 const { activeRun } = useRun()
 const { timer } = useTimer()
@@ -50,7 +54,7 @@ const winState = computed<"win" | "loss" | undefined>(() => {
 <template>
 	<div class="another-container">
 		<div class="timer"
-			:class="[{ 'timer-out': !inline, 'timer-inline': inline, 'timer-hide': !active }, alignment ? `timer-${alignment}` : '', winState ? `timer-${winState}` : '']">
+			:class="[{ 'timer-out': !inline, 'timer-inline': inline, 'timer-hide': !active, 'manual-size': !dynamicWidth }, alignment ? `timer-${alignment}` : '', winState ? `timer-${winState}` : '']">
 			<p class="nested" :class="{ 'nested-inline': inline }">{{ timeStr }}</p> <!-- TODO: add a default -->
 		</div>
 	</div>
@@ -67,11 +71,14 @@ const winState = computed<"win" | "loss" | undefined>(() => {
 }
 
 .timer {
-	background-color: #2e2e2ecc;
+	background-color: v-bind(bgColorDef);
 	transition: opacity 0.2s;
-	width: fit-content;
 	font-family: 'Ubuntu Mono';
 	font-size: calc(4.3rem * v-bind(scale));
+}
+
+.manual-size {
+	width: fit-content;
 }
 
 .timer-hide {
@@ -109,6 +116,7 @@ const winState = computed<"win" | "loss" | undefined>(() => {
 	margin: 0;
 	padding-left: calc(1rem * v-bind(scale));
 	padding-right: calc(1rem * v-bind(scale));
+	text-align: center;
 }
 
 .nested-inline {
