@@ -12,7 +12,7 @@ const props = defineProps<{
 	dynamicWidth?: boolean,
 }>()
 
-const bgColorDef = computed<String>(() => props.bgColor ?? "#2e2e2ecc" )
+const bgColorDef = computed<String>(() => props.bgColor ?? "#312537cc" )
 
 const { activeRun } = useRun()
 const { timer } = useTimer()
@@ -105,11 +105,11 @@ const winState = computed<"win" | "loss" | undefined>(() => {
 }
 
 .timer-win {
-	background-color: rgba(0, 220, 0, 0.8);
+	background-color: hsla(120, 100%, 43%, 0.8);
 }
 
 .timer-loss {
-	background-color: rgba(220, 0, 0, 0.8);
+	background-color: hsla(0, 100%, 43%, 0.8);
 }
 
 .nested {

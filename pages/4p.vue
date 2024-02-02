@@ -55,7 +55,7 @@ html, body, #__nuxt, .root {
 	margin-top: 20rem;
 	width: 100%;
 	height: 4.5rem;
-	background-color: #454545cc;
+	background-color: hsla(276, 20%, 27%, 0.8);
 	display: flex;
 	flex-flow: row nowrap;
 	justify-content: space-evenly;

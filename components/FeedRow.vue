@@ -36,7 +36,6 @@ const props = defineProps<{
 
 .feed {
 	display: block;
-	/*background-color: black;*/
 	aspect-ratio: 4 / 3;
 	width: 50%;
 }

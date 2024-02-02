@@ -6,7 +6,7 @@ const props = defineProps<{
 	bgColor?: string,
 }>()
 
-const bgColorDef = computed<String>(() => props.bgColor ?? "#454545cc" )
+const bgColorDef = computed<String>(() => props.bgColor ?? "#463e4ccc" )
 
 const { activeRun } = useRun()
 </script>

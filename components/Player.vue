@@ -28,7 +28,7 @@ const seed = computed<Number>(() => parseInt(runner.value?.customData?.seed ?? "
 
 <style scoped>
 .seed {
-	background-color: #1c1c1ccc;
+	background-color: hsla(276, 20%, 10%, 0.8);
 	text-align: center;
 	width: calc(5.5rem * v-bind(scale));
 	margin: 0;
@@ -36,7 +36,7 @@ const seed = computed<Number>(() => parseInt(runner.value?.customData?.seed ?? "
 }
 
 .player {
-	background-color: #565656cc;
+	background-color: hsla(276, 20%, 35%, 0.8);
 	margin: 0;
 	padding: 0 calc(1rem * v-bind(scale));
 }
