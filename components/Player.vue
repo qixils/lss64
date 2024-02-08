@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { useRun } from '../composables/run';
+import PlayerName from './PlayerName.vue';
 import type { RunDataPlayer } from '../../nodecg-speedcontrol/src/types';
 
 const props = defineProps<{
@@ -17,12 +18,9 @@ const seed = computed<Number>(() => parseInt(runner.value?.customData?.seed ?? "
 
 <template>
 	<p v-if="alignment !== 'right'" class="seed">{{ seed }}</p>
-	<p class="player" :class="{ right: alignment === 'right' }">
-		{{ runner?.name ?? 'Player' }}
-		<span v-if="runner?.pronouns">
-			({{ runner.pronouns }})
-		</span>
-	</p>
+	<div class="runner">
+		<PlayerName :scale="scale" :player="runner" :alignment="alignment" />
+	</div>
 	<p v-if="alignment === 'right'" class="seed">{{ seed }}</p>
 </template>
 
@@ -35,13 +33,7 @@ const seed = computed<Number>(() => parseInt(runner.value?.customData?.seed ?? "
 	padding: 0;
 }
 
-.player {
+.runner {
 	background-color: hsla(276, 20%, 35%, 0.8);
-	margin: 0;
-	padding: 0 calc(1rem * v-bind(scale));
-}
-
-.right {
-	text-align: end;
 }
 </style>

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { RunDataPlayer } from 'nodecg-speedcontrol/src/types';
+import PlayerName from '../components/PlayerName.vue';
 import { useRun } from '../composables/run';
 
 const { activeRun } = useRun()
@@ -9,13 +10,10 @@ const commentators = computed<RunDataPlayer[]>(() => activeRun.value?.teams?.fin
 
 <template>
 	<div class="commentator-container">
-		<p v-for="commentator in commentators">
+		<div class="commentator" v-for="commentator in commentators">
 			<img src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@latest/assets/72x72/1f399.png">
-			{{ commentator.name }}
-			<span v-if="commentator.pronouns">
-				({{ commentator.pronouns }})
-			</span>
-		</p>
+			<PlayerName :scale="0.85" :player="commentator" />
+		</div>
 	</div>
 </template>
 
@@ -30,12 +28,12 @@ html, body, #__nuxt, .root, .commentator-container {
 	flex-flow: column nowrap;
 	justify-content: center;
 }
-</style>
 
-<style scoped>
-img {
-	aspect-ratio: 1 / 1;
-	width: 2.35rem;
+.commentator {
+	display: flex;
+	flex-flow: row nowrap;
+	justify-content: flex-start;
+	align-items: center;
 }
 
 p {
@@ -44,5 +42,12 @@ p {
 	margin: 0;
 	color: white;
 	text-shadow: 0 0 4px black;
+}
+</style>
+
+<style scoped>
+img {
+	aspect-ratio: 1 / 1;
+	width: 2.35rem;
 }
 </style>
