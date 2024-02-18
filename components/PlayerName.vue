@@ -51,10 +51,6 @@ onUnmounted(() => {
 <style scoped>
 .player-root {
 	position: relative;
-	height: 100%;
-	min-height: fit-content;
-	width: 100%;
-	min-width: fit-content;
 }
 
 .wrapper {
@@ -65,9 +61,14 @@ onUnmounted(() => {
 	justify-content: flex-start;
 	gap: calc(1rem * v-bind(scale));
 	align-items: center;
+	position: absolute;
+}
+
+.player-root, .wrapper {
 	height: 100%;
 	min-height: fit-content;
-	position: absolute;
+	width: 100%;
+	min-width: fit-content;
 }
 
 .right {
