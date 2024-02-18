@@ -9,18 +9,27 @@ const props = defineProps<{
 	alignment?: "left" | "right",
 }>()
 
-const showingTwitch = ref<boolean>(false)
-const shouldShowTwitch = computed<boolean>(() => showingTwitch.value && !!props.player?.social?.twitch)
-let interval: any
+const stage = ref<number>(0)
+const shouldShowTwitch = computed<boolean>(() => stage.value % 2 == 1 && !!props.player?.social?.twitch)
+let timeout: any
+
+function schedule() {
+	let now = Date.now()
+	stage.value = Math.round(now / 10000) // 10 seconds
+	let millis = now % 1000
+	let delay = 1000 - millis
+	timeout = setTimeout(schedule, delay)
+}
 
 onMounted(() => {
-	interval = setInterval(() => {
-		showingTwitch.value = !showingTwitch.value
-	}, 10000)
+	schedule()
 })
 
 onUnmounted(() => {
-	if (interval) clearInterval(interval)
+	if (timeout) {
+		clearTimeout(timeout)
+		timeout = undefined
+	}
 })
 </script>
 
@@ -73,7 +82,7 @@ p {
 
 .v-enter-active,
 .v-leave-active {
-  transition: opacity 0.5s ease;
+  transition: opacity 1s ease;
 }
 
 .v-enter-from,
