@@ -10,6 +10,7 @@ const props = defineProps<{
 }>()
 
 const showingTwitch = ref<boolean>(false)
+const shouldShowTwitch = computed<boolean>(() => showingTwitch.value && !!props.player?.social?.twitch)
 let interval: any
 
 onMounted(() => {
@@ -24,20 +25,30 @@ onUnmounted(() => {
 </script>
 
 <template>
-	<Transition>
-		<div v-if="showingTwitch && player?.social?.twitch" :class="{ right: alignment === 'right' }">
-			<p>/{{ player?.social?.twitch }}</p>
-			<Pronouns :pronouns="player?.pronouns" :scale="scale" />
-		</div>
-		<div v-else :class="{ right: alignment === 'right' }">
-			<p>{{ player?.name ?? 'Runner' }}</p>
-			<Pronouns :pronouns="player?.pronouns" :scale="scale" />
-		</div>
-	</Transition>
+	<div class="player-root">
+		<Transition>
+			<div v-if="!shouldShowTwitch" class="normal wrapper" :class="{ right: alignment === 'right' }">
+				<p>{{ player?.name ?? 'Runner' }}</p>
+				<Pronouns :pronouns="player?.pronouns" :scale="scale" />
+			</div>
+			<div v-else class="twitch wrapper" :class="{ right: alignment === 'right' }">
+				<p>/{{ player?.social?.twitch }}</p>
+				<Pronouns :pronouns="player?.pronouns" :scale="scale" />
+			</div>
+		</Transition>
+	</div>
 </template>
 
 <style scoped>
-div {
+.player-root {
+	position: relative;
+	height: 100%;
+	min-height: fit-content;
+	width: 100%;
+	min-width: fit-content;
+}
+
+.wrapper {
 	margin: 0;
 	padding: 0 calc(1rem * v-bind(scale));
 	display: flex;
@@ -46,6 +57,8 @@ div {
 	gap: calc(1rem * v-bind(scale));
 	align-items: center;
 	height: 100%;
+	min-height: fit-content;
+	position: absolute;
 }
 
 .right {
@@ -58,7 +71,6 @@ p {
 	margin: 0;
 }
 
-/* we will explain what these classes do next! */
 .v-enter-active,
 .v-leave-active {
   transition: opacity 0.5s ease;

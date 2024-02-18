@@ -34,6 +34,7 @@ html, body, #__nuxt, .root, .commentator-container {
 	flex-flow: row nowrap;
 	justify-content: flex-start;
 	align-items: center;
+	height: 3.5rem; /* hack fix */
 }
 
 p {
