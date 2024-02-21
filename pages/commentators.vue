@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import type { RunDataPlayer } from 'nodecg-speedcontrol/src/types';
+import { computed } from 'vue';
+import type { RunDataCommentator } from 'nodecg-speedcontrol/src/types';
 import PlayerName from '../components/PlayerName.vue';
 import { useRun } from '../composables/run';
 
 const { activeRun } = useRun()
 
-const commentators = computed<RunDataPlayer[]>(() => activeRun.value?.teams?.find(team => team.name === "Commentators")?.players ?? [])
+const commentators = computed<RunDataCommentator[]>(() => activeRun.value?.commentators ?? activeRun.value?.teams?.find(team => team.name === "Commentators")?.players ?? [])
 </script>
 
 <template>

@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue';
 import Pronouns from './Pronouns.vue';
-import type { RunDataPlayer } from '../../nodecg-speedcontrol/src/types';
+import type { RunDataCommentator } from '../../nodecg-speedcontrol/src/types';
 
 const props = defineProps<{
 	scale: number,
-	player?: RunDataPlayer,
+	player?: RunDataCommentator,
 	alignment?: "left" | "right",
 }>()
 
