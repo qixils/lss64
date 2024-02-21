@@ -73,6 +73,7 @@ onUnmounted(() => {
 
 .right {
 	justify-content: flex-end;
+	left: calc(-2rem * v-bind(scale));
 }
 
 p {
