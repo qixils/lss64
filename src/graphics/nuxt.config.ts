@@ -7,7 +7,7 @@ export default defineNuxtConfig({
 			autoSubfolderIndex: false
 		},
 		output: {
-			publicDir: "graphics"
+			publicDir: "../../graphics"
 		}
 	},
 	app: {
