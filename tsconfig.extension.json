@@ -1,0 +1,28 @@
+{
+	// https://nuxt.com/docs/guide/concepts/typescript
+	"compilerOptions": {
+		"target": "es2020",
+		"module": "commonjs",
+		"moduleResolution": "node",
+		"esModuleInterop": true,
+		"rootDir": "src/extension",
+		"outDir": "extension",
+		"paths": {
+			"nodecg/*": [
+				"../../*"
+			]
+		},
+		"types": [
+			"../../types/browser.d.ts" // Specify the path to your declaration file
+		],
+		"skipLibCheck": true
+	},
+	"include": [
+		"src/extension/**/*.ts",
+		"src/types/**/*.d.ts",
+		"../../types/server.d.ts"
+	],
+	"exclude": [
+		"node_modules"
+	]
+}
