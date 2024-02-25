@@ -5,5 +5,8 @@ export interface ChannelVoiceStatus {
 }
 
 export interface UserVoiceStatus {
-	talking: boolean; // TODO: waveform volume ?
+	speaking: boolean; // TODO: waveform volume ?
+	mute: boolean;
+	deaf: boolean;
+	pfp: string;
 }

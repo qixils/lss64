@@ -16,7 +16,24 @@ if (config?.discord?.token) {
     // It makes some properties non-nullable.
     client.once(discord_js_1.Events.ClientReady, async (readyClient) => {
         nodecg.log.info(`[Discord] Integration ready as ${readyClient.user.tag}`);
+        // prepare variables
+        replicants_1.channelVoiceStatus.value = { users: {} };
+        async function getUser(userId) { return await client.users.fetch(userId); }
+        async function setStatus(userId, speaking) {
+            const userState = guild.voiceStates.cache.get(userId);
+            const user = await getUser(userId);
+            replicants_1.channelVoiceStatus.value.users[user.username] = {
+                speaking,
+                mute: userState?.mute ?? false,
+                deaf: userState?.deaf ?? false,
+                pfp: user.displayAvatarURL({ size: 256 })
+            };
+        }
         const guild = await client.guilds.fetch(config.discord.guild);
+        // init voice channel status
+        // technically this is a bit wasteful since i throw away the value but it's once on startup so whatever
+        guild.voiceStates.cache.forEach(async (value, userId) => await setStatus(userId, false));
+        // join voice channel
         const channel = await client.channels.fetch(config.discord.channel);
         const connection = (0, voice_1.joinVoiceChannel)({
             channelId: channel.id,
@@ -27,16 +44,14 @@ if (config?.discord?.token) {
         });
         const receiver = connection.receiver;
         const speaking = receiver.speaking;
-        const usernames = {};
-        async function username(userId) {
-            if (userId in usernames) {
-                usernames[userId] = (await client.users.fetch(userId)).username;
+        // set listeners
+        speaking.on('start', async (userId) => { await setStatus(userId, true); });
+        speaking.on('end', async (userId) => { await setStatus(userId, false); });
+        client.on('voiceStateUpdate', async (oldState, newState) => {
+            if (oldState.channelId !== newState.channelId) {
+                await setStatus(newState.member.id, false);
             }
-            return usernames[userId];
-        }
-        replicants_1.channelVoiceStatus.value = { users: {} };
-        speaking.on('start', async (userId) => { replicants_1.channelVoiceStatus.value.users[await username(userId)] = { talking: true }; nodecg.log.info("talking"); });
-        speaking.on('end', async (userId) => { replicants_1.channelVoiceStatus.value.users[await username(userId)] = { talking: false }; nodecg.log.info("not talking"); });
+        });
     });
     // Log in to Discord with your client's token
     client.login(config.discord.token);
