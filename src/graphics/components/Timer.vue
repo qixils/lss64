@@ -24,7 +24,11 @@ const timeStr = computed<String>(() => {
 			time = timer.value.teamFinishTimes[team.id]
 		}
 	}
-	return (time?.time ?? "00:00:00").substring(1)
+	let out = time?.time ?? "00:00:00"
+	while ((out.startsWith('0') || out.startsWith(':')) && out.length > 5) {
+		out = out.substring(1)
+	}
+	return out
 })
 
 const active = computed<Boolean>(() => {
