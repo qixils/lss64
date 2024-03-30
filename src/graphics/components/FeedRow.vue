@@ -6,11 +6,12 @@ const props = defineProps<{
 	scale: number,
 	firstPlayer: number,
 	timer: boolean,
+	ar: number,
 }>()
 </script>
 
 <template>
-	<div>
+	<!-- <div> -->
 		<div class="feeds">
 			<div class="feed">
 				<Timer :scale="scale" :player="firstPlayer + 0" :inline="true" alignment="left" />
@@ -24,19 +25,19 @@ const props = defineProps<{
 			<Timer :scale="scale" v-if="timer" />
 			<Player :scale="scale" class="player" :player="firstPlayer + 1" alignment="right" />
 		</div>
-	</div>
+	<!-- </div> -->
 </template>
 
 <style scoped>
 .feeds {
 	display: flex;
 	flex-flow: row nowrap;
-	justify-content: space-between;
+	justify-content: space-around;
 }
 
 .feed {
 	display: block;
-	aspect-ratio: 4 / 3;
+	aspect-ratio: v-bind(ar);
 	width: 50%;
 }
 

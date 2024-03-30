@@ -19,15 +19,15 @@ function getVoiceStatus(commentator: RunDataCommentator): UserVoiceStatus | unde
 </script>
 
 <template>
-	<div class="commentator-container">
-		<div class="commentator" v-for="commentator in commentators">
+	<TransitionGroup class="commentator-container" name="commentator-container" tag="div">
+		<div class="commentator" v-for="commentator in commentators" :key="commentator.id">
 			<img
 			:src="getVoiceStatus(commentator)?.pfp ?? 'https://cdn.jsdelivr.net/gh/jdecked/twemoji@latest/assets/72x72/1f399.png'"
 			:class="{ active: getVoiceStatus(commentator)?.speaking, pfp: getVoiceStatus(commentator)?.pfp }"
 			>
 			<PlayerName :scale="0.85" :player="commentator" />
 		</div>
-	</div>
+	</TransitionGroup>
 </template>
 
 <style>
@@ -49,6 +49,24 @@ html, body, #__nuxt, .root, .commentator-container {
 	justify-content: flex-start;
 	align-items: center;
 	height: 3.5rem; /* hack fix */
+}
+
+.commentator-container-move, /* apply transition to moving elements */
+.commentator-container-enter-active,
+.commentator-container-leave-active {
+  transition: all 0.5s ease;
+}
+
+.commentator-container-enter-from,
+.commentator-container-leave-to {
+  opacity: 0;
+  transform: translateX(30px);
+}
+
+/* ensure leaving items are taken out of layout flow so that moving
+   animations can be calculated correctly. */
+.commentator-container-leave-active {
+  position: absolute;
 }
 
 p {

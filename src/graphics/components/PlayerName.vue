@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref, computed, onMounted, onUnmounted } from 'vue';
 import Pronouns from './Pronouns.vue';
-import type { RunDataCommentator } from '../../nodecg-speedcontrol/src/types';
+import type { RunDataCommentator } from '../../../../nodecg-speedcontrol/src/types';
 
 const props = defineProps<{
 	scale: number,
@@ -9,13 +9,18 @@ const props = defineProps<{
 	alignment?: "left" | "right",
 }>()
 
-const stage = ref<number>(0)
+const stageDuration = 10_000 // 10 seconds
+function getNewStage(now?: number): number {
+	return Math.round((now ?? Date.now()) / stageDuration)
+}
+
+const stage = ref<number>(getNewStage())
 const shouldShowTwitch = computed<boolean>(() => stage.value % 2 == 1 && !!props.player?.social?.twitch)
 let timeout: any
 
 function schedule() {
 	let now = Date.now()
-	stage.value = Math.round(now / 10000) // 10 seconds
+	stage.value = getNewStage(now)
 	let millis = now % 1000
 	let delay = 1000 - millis
 	timeout = setTimeout(schedule, delay)

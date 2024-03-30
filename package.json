@@ -44,6 +44,16 @@
         "height": 1080
       },
       {
+        "file": "2p_16x9.html",
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "file": "4p_16x9.html",
+        "width": 1920,
+        "height": 1080
+      },
+      {
         "file": "commentators.html",
         "width": 650,
         "height": 230

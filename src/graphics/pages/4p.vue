@@ -1,18 +1,19 @@
 <script setup lang="ts">
 import Round from '../components/Round.vue';
 import FeedRow from '../components/FeedRow.vue';
+import Timer from '../components/Timer.vue';
 </script>
 
 <template>
 	<div class="body horiz">
 		<div class="feeds vert">
-			<FeedRow class="feed" :scale="0.5" :first-player="0" :timer="false" />
-			<FeedRow class="feed" :scale="0.5" :first-player="2" :timer="false" />
+			<FeedRow class="feed" :ar="4/3" :scale="0.5" :first-player="0" :timer="false" />
+			<FeedRow class="feed" :ar="4/3" :scale="0.5" :first-player="2" :timer="false" />
 		</div>
 		<div class="grow">
-			<div class="bar">
-				<Round :scale="1.33" bg-color="#00000000" class="round" />
-				<Timer :scale="1" bg-color="#00000000" :dynamic-width="true" />
+			<div class="bars">
+				<Round :scale="1.33" class="round" />
+				<Timer :scale="1" :dynamic-width="true" />
 			</div>
 		</div>
 	</div>
@@ -59,6 +60,15 @@ html, body, #__nuxt, .root {
 	display: flex;
 	flex-flow: row nowrap;
 	justify-content: space-evenly;
+}
+.bars {
+	margin-top: 20rem;
+	width: 100%;
+	height: fit-content;
+	display: flex;
+	flex-flow: column nowrap;
+	justify-content: flex-start;
+	align-items: stretch;
 }
 .round {
 	line-height: 4.25rem;

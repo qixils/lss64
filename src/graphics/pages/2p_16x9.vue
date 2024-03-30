@@ -8,7 +8,7 @@ const feedScale = 0.9;
 <template>
 	<div class="body">
 		<Round :scale="1" />
-		<FeedRow :ar="4/3" :scale="feedScale" :first-player="0" :timer="true" />
+		<FeedRow class="feed" :ar="16/9" :scale="feedScale" :first-player="0" :timer="true" />
 	</div>
 </template>
 
@@ -19,5 +19,8 @@ const feedScale = 0.9;
 	justify-content: flex-start;
 	color: white;
 	font-size: calc(3.5rem * v-bind(feedScale));
+}
+.feed {
+	width: 100%;
 }
 </style>

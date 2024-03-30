@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { computed } from 'vue';
 import { useRun } from '../composables/run';
 
 const props = defineProps<{

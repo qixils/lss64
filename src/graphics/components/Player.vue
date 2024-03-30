@@ -2,7 +2,7 @@
 import { computed } from 'vue';
 import { useRun } from '../composables/run';
 import PlayerName from './PlayerName.vue';
-import type { RunDataPlayer } from '../../nodecg-speedcontrol/src/types';
+import type { RunDataPlayer } from '../../../../nodecg-speedcontrol/src/types';
 
 const props = defineProps<{
 	scale: number,

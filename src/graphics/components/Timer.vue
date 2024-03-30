@@ -53,13 +53,15 @@ const winState = computed<"win" | "loss" | undefined>(() => {
 	if (!oppTime || oppTime.state === "forfeit") return "win"
 	return time.milliseconds < oppTime.milliseconds ? "win" : "loss"
 })
+
+const height = computed(() => props.inline ? "100%" : "unset")
 </script>
 
 <template>
 	<div class="another-container">
 		<div class="timer"
 			:class="[{ 'timer-out': !inline, 'timer-inline': inline, 'timer-hide': !active, 'manual-size': !dynamicWidth }, alignment ? `timer-${alignment}` : '', winState ? `timer-${winState}` : '', (player === undefined) ? `timer-state-${timer?.state ?? 'stopped'}` : '' ]">
-			<p class="nested" :class="{ 'nested-inline': inline }">{{ timeStr }}</p> <!-- TODO: add a default -->
+			<p class="nested" :class="{ 'nested-inline': inline }">{{ timeStr }}</p>
 		</div>
 	</div>
 </template>
@@ -68,7 +70,7 @@ const winState = computed<"win" | "loss" | undefined>(() => {
 .another-container {
 	margin: 0;
 	padding: 0;
-	height: 100%;
+	height: v-bind(height);
 	display: flex;
 	flex-flow: column nowrap;
 	justify-content: flex-end;
