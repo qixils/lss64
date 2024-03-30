@@ -11,21 +11,20 @@ const props = defineProps<{
 </script>
 
 <template>
-	<!-- <div> -->
-		<div class="feeds">
-			<div class="feed">
-				<Timer :scale="scale" :player="firstPlayer + 0" :inline="true" alignment="left" />
-			</div>
-			<div class="feed">
-				<Timer :scale="scale" :player="firstPlayer + 1" :inline="true" alignment="right" />
-			</div>
+	<div class="feeds">
+		<div class="feed">
+			<Timer :scale="scale" :player="firstPlayer + 0" :inline="true" alignment="left" />
 		</div>
-		<div class="bar" :class="{ 'bar-timerless': !timer }">
-			<Player :scale="scale" class="player" :player="firstPlayer" />
-			<Timer :scale="scale" v-if="timer" />
-			<Player :scale="scale" class="player" :player="firstPlayer + 1" alignment="right" />
+		<div class="feed">
+			<Timer :scale="scale" :player="firstPlayer + 1" :inline="true" alignment="right" />
 		</div>
-	<!-- </div> -->
+	</div>
+	<div class="bar">
+		<Player :scale="scale" class="player" :player="firstPlayer" />
+		<Timer :scale="scale" v-if="timer" />
+		<div v-else></div>
+		<Player :scale="scale" class="player" :player="firstPlayer + 1" alignment="right" />
+	</div>
 </template>
 
 <style scoped>
@@ -45,9 +44,5 @@ const props = defineProps<{
 	display: grid;
 	grid-template-columns: auto 1fr auto 1fr auto;
 	height: calc(4.5rem * v-bind(scale));
-}
-
-.bar-timerless {
-	grid-template-columns: auto 1fr 1fr auto;
 }
 </style>

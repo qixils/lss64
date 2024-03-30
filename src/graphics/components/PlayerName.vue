@@ -55,6 +55,7 @@ onUnmounted(() => {
 
 <style scoped>
 .player-root {
+	display: inline-block;
 	position: relative;
 }
 

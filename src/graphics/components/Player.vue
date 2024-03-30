@@ -12,16 +12,22 @@ const props = defineProps<{
 
 const { activeRun } = useRun()
 
-const runner = computed<RunDataPlayer | undefined>(() => activeRun.value?.teams?.[props.player]?.players?.[0])
-const seed = computed<Number>(() => parseInt(runner.value?.customData?.seed ?? "16"))
+const runner = computed(() => activeRun.value?.teams?.[props.player]?.players?.[0])
+const seed = computed(() => runner.value?.customData?.seed)
 </script>
 
 <template>
-	<p v-if="alignment !== 'right'" class="seed">{{ seed }}</p>
+	<template v-if="alignment !== 'right'">
+		<p v-if="seed" class="seed">{{ seed }}</p>
+		<div v-else></div>
+	</template>
 	<div class="runner">
 		<PlayerName :scale="scale" :player="runner" :alignment="alignment" />
 	</div>
-	<p v-if="alignment === 'right'" class="seed">{{ seed }}</p>
+	<template v-if="alignment === 'right'">
+		<p v-if="seed" class="seed">{{ seed }}</p>
+		<div v-else></div>
+	</template>
 </template>
 
 <style scoped>

@@ -3,7 +3,7 @@ import type { ReplicantBrowser } from 'nodecg/types/browser'
 import type { ChannelVoiceStatus } from '../../types'
 
 export function useVoice() {
-	const channelVoiceStatus = ref<ChannelVoiceStatus>()
+	const channelVoiceStatus = ref<ChannelVoiceStatus>({ users: {} })
 
 	function setActiveStatus(newVal: ChannelVoiceStatus, oldVal: ChannelVoiceStatus) {
 		if (!newVal) return
