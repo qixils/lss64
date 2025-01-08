@@ -10,7 +10,8 @@
     "start": "node ../..",
     "postinstall": "nuxt prepare",
     "watch": "run-p watch:*",
-    "watch:extension": "tsc -b tsconfig.extension.json -w"
+    "watch:extension": "tsc -b tsconfig.extension.json -w",
+    "deploy-commands": "tsc extension/deploy-commands.ts && "
   },
   "dependencies": {
     "nodecg-speedcontrol": "file:../nodecg-speedcontrol"
