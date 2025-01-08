@@ -14,5 +14,9 @@ export default (nodecg: NodeCG) => {
    * things to be loaded *after* the NodeCG context is set.
    */
   set(nodecg);
-  require('./voice');
+  try {
+    require('./voice');
+  } catch (e) {
+    console.error("Failed to activate Discord", e)
+  }
 };

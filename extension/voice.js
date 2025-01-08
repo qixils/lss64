@@ -113,5 +113,5 @@ if (config?.discord?.token) {
         });
     });
     // Log in to Discord with your client's token
-    client.login(config.discord.token);
+    client.login(config.discord.token).catch(() => { });
 }

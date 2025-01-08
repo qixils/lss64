@@ -6,18 +6,18 @@ const feedScale = 0.9;
 </script>
 
 <template>
-	<div class="body">
-		<Round :scale="1" />
-		<FeedRow :ar="16/9" :scale="feedScale" :first-player="0" :timer="true" />
-	</div>
+  <div class="body">
+    <Round :scale="1" />
+    <FeedRow :ar="16 / 9" :scale="feedScale" :first-player="0" :timer="true" />
+  </div>
 </template>
 
 <style scoped>
 .body {
-	display: flex;
-	flex-flow: column nowrap;
-	justify-content: flex-start;
-	color: white;
-	font-size: calc(3.5rem * v-bind(feedScale));
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: flex-start;
+  color: white;
+  font-size: calc(3.5rem * v-bind(feedScale));
 }
 </style>

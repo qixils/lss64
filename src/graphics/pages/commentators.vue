@@ -12,46 +12,52 @@ const { channelVoiceStatus } = useVoice()
 const commentators = computed<RunDataCommentator[]>(() => activeRun.value?.commentators ?? activeRun.value?.teams?.find(team => team.name === "Commentators")?.players ?? [])
 
 function getVoiceStatus(commentator: RunDataCommentator): UserVoiceStatus | undefined {
-	const discord = commentator.customData.discord
-	if (!discord) return;
-	return channelVoiceStatus.value.users[discord]
+  const discord = commentator.customData.discord
+  if (!discord) return;
+  return channelVoiceStatus.value.users[discord]
 }
 </script>
 
 <template>
-	<TransitionGroup class="commentator-container" name="commentator-container" tag="div">
-		<div class="commentator" v-for="commentator in commentators" :key="commentator.id">
-			<img
-			:src="getVoiceStatus(commentator)?.pfp ?? 'https://cdn.jsdelivr.net/gh/jdecked/twemoji@latest/assets/72x72/1f399.png'"
-			:class="{ active: getVoiceStatus(commentator)?.speaking, pfp: getVoiceStatus(commentator)?.pfp }"
-			>
-			<PlayerName :scale="0.85" :player="commentator" />
-		</div>
-	</TransitionGroup>
+  <TransitionGroup class="commentator-container" name="commentator-container" tag="div">
+    <div class="commentator" v-for="commentator in commentators" :key="commentator.id">
+      <img
+        :src="getVoiceStatus(commentator)?.pfp ?? 'https://cdn.jsdelivr.net/gh/jdecked/twemoji@latest/assets/72x72/1f399.png'"
+        :class="{ active: getVoiceStatus(commentator)?.speaking, pfp: getVoiceStatus(commentator)?.pfp }">
+      <PlayerName :scale="0.85" :player="commentator" />
+    </div>
+  </TransitionGroup>
 </template>
 
 <style>
-html, body, #__nuxt, .root, .commentator-container {
-	width: 100vw;
-	height: 100vh;
+html,
+body,
+#__nuxt,
+body,
+.root,
+.commentator-container {
+  width: 100vw;
+  height: 100vh;
 }
 
 .commentator-container {
-	display: flex;
-	flex-flow: column nowrap;
-	justify-content: center;
-	margin-left: 0.5rem;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+  margin-left: 0.5rem;
 }
 
 .commentator {
-	display: flex;
-	flex-flow: row nowrap;
-	justify-content: flex-start;
-	align-items: center;
-	height: 3.5rem; /* hack fix */
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: flex-start;
+  align-items: center;
+  height: 3.5rem;
+  /* hack fix */
 }
 
-.commentator-container-move, /* apply transition to moving elements */
+.commentator-container-move,
+/* apply transition to moving elements */
 .commentator-container-enter-active,
 .commentator-container-leave-active {
   transition: all 0.5s ease;
@@ -70,27 +76,28 @@ html, body, #__nuxt, .root, .commentator-container {
 }
 
 p {
-	font-size: 3rem;
-	padding: 0;
-	margin: 0;
-	color: white;
-	text-shadow: 0 0 4px black;
+  font-size: 3rem;
+  padding: 0;
+  margin: 0;
+  color: white;
+  text-shadow: 0 0 4px black;
 }
 </style>
 
 <style scoped>
-img, svg {
-	aspect-ratio: 1 / 1;
-	width: 2.5rem;
-	padding: 0.1rem;
-	border: 0.25rem solid transparent;
+img,
+svg {
+  aspect-ratio: 1 / 1;
+  width: 2.5rem;
+  padding: 0.1rem;
+  border: 0.25rem solid transparent;
 }
 
 .active {
-	border-color: #23a559;
+  border-color: #23a559;
 }
 
 .pfp {
-	border-radius: 100%;
+  border-radius: 100%;
 }
 </style>

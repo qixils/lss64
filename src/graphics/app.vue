@@ -19,13 +19,18 @@
 <template>
   <div class="root">
     <NuxtLayout>
-		<NuxtPage />
-	</NuxtLayout>
+      <NuxtPage />
+    </NuxtLayout>
   </div>
 </template>
 
-<style scoped>
-.root {
+<style>
+body {
 	font-family: 'Lato', sans-serif;
+  background-color: transparent;
+  margin: 0;
+  overflow: hidden;
+  width: 1920px;
+  height: 1080px;
 }
 </style>
