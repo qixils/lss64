@@ -77,7 +77,7 @@ if (config?.discord?.token) {
 			if (client.commands.size > 0) {
 				nodecg.log.info(`[Discord] Registering commands`)
 				const data = await readyClient.rest.put(
-					Routes.applicationGuildCommands(readyClient.application.id, config.discord.guild),
+					Routes.applicationGuildCommands(readyClient.application.id, config.discord!.guild),
 					{ body: client.commands.mapValues(command => command.data.toJSON()) },
 				)
 				nodecg.log.info(`[Discord] Register result:`, data)
@@ -102,14 +102,14 @@ if (config?.discord?.token) {
 			}
 		}
 
-		const guild = await client.guilds.fetch(config.discord.guild)
+		const guild = await client.guilds.fetch(config.discord!.guild)
 
 		// init voice channel status
 		// technically this is a bit wasteful since i throw away the value but it's once on startup so whatever
 		guild.voiceStates.cache.forEach(async (value, userId) => await setStatus(userId, false) )
 
 		// join voice channel
-		const channel = await client.channels.fetch(config.discord.channel) as VoiceChannel
+		const channel = await client.channels.fetch(config.discord!.channel) as VoiceChannel
 		const connection = joinVoiceChannel({
 			channelId: channel.id,
 			guildId: guild.id,
@@ -124,7 +124,7 @@ if (config?.discord?.token) {
 		speaking.on('start', async (userId) => { await setStatus(userId, true) })
 		speaking.on('end', async (userId) => { await setStatus(userId, false) })
 		client.on('voiceStateUpdate', async (oldState, newState) => {
-			if (oldState.channelId !== newState.channelId) {
+			if (newState.member?.id && oldState.channelId !== newState.channelId) {
 				await setStatus(newState.member.id, false)
 			}
 		})

@@ -107,7 +107,7 @@ if (config?.discord?.token) {
         speaking.on('start', async (userId) => { await setStatus(userId, true); });
         speaking.on('end', async (userId) => { await setStatus(userId, false); });
         client.on('voiceStateUpdate', async (oldState, newState) => {
-            if (oldState.channelId !== newState.channelId) {
+            if (newState.member?.id && oldState.channelId !== newState.channelId) {
                 await setStatus(newState.member.id, false);
             }
         });
