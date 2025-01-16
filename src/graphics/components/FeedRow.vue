@@ -12,11 +12,11 @@ const props = defineProps<{
 
 <template>
   <div class="feeds">
-    <div class="feed">
-      <Timer :scale="scale" :player="firstPlayer + 0" :inline="true" alignment="left" />
+    <div class="feed items-start">
+      <Timer :scale="scale" :player="firstPlayer + 0" />
     </div>
-    <div class="feed">
-      <Timer :scale="scale" :player="firstPlayer + 1" :inline="true" alignment="right" />
+    <div class="feed items-end">
+      <Timer :scale="scale" :player="firstPlayer + 1" />
     </div>
   </div>
   <div class="bar">
@@ -35,7 +35,7 @@ const props = defineProps<{
 }
 
 .feed {
-  display: block;
+  @apply flex flex-col justify-end;
   aspect-ratio: v-bind(ar);
   width: 50%;
 }

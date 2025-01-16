@@ -19,4 +19,5 @@ export default (nodecg: NodeCG) => {
   } catch (e) {
     console.error("Failed to activate Discord", e)
   }
+  require('./subathon');
 };

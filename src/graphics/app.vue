@@ -1,5 +1,6 @@
 <script setup lang="ts">
   import { onMounted } from 'vue';
+  import "core-js/actual";
 
   const fixUrl = () => {
     const url = window.location.href
@@ -24,7 +25,10 @@
   </div>
 </template>
 
-<style>
+<style lang="postcss">
+@tailwind components;
+@tailwind utilities;
+
 body {
 	font-family: 'Lato', sans-serif;
   background-color: transparent;

@@ -2,26 +2,31 @@
 import { computed } from 'vue';
 import { useRun } from '../composables/run';
 import { useTimer } from '../composables/timer';
+import type { Timer } from 'nodecg-speedcontrol/src/types';
 
 const props = defineProps<{
   scale: number,
   player?: number,
-  inline?: boolean,
-  alignment?: "left" | "right",
   bgColor?: string,
-  dynamicWidth?: boolean,
+  customTime?: string,
+  alwaysActive?: boolean,
 }>()
 
 const bgColorDef = computed<String>(() => props.bgColor ?? "#312537cc")
 
 const { activeRun } = useRun()
 const { timer } = useTimer()
-const timeStr = computed<String>(() => {
-  let time: { time: String } | undefined = timer.value
-  if (props.player !== undefined && activeRun.value && timer.value) {
-    const team = activeRun.value.teams[props.player]
-    if (team.id in timer.value.teamFinishTimes) {
-      time = timer.value.teamFinishTimes[team.id]
+const timeStr = computed<string>(() => {
+  let time: Pick<Timer, 'time'> | undefined
+  if (props.customTime) {
+    time = { time: props.customTime }
+  } else {
+    time = timer.value
+    if (props.player !== undefined && activeRun.value && timer.value) {
+      const team = activeRun.value.teams[props.player]
+      if (team.id in timer.value.teamFinishTimes) {
+        time = timer.value.teamFinishTimes[team.id]
+      }
     }
   }
   let out = time?.time ?? "00:00:00"
@@ -32,6 +37,7 @@ const timeStr = computed<String>(() => {
 })
 
 const active = computed<Boolean>(() => {
+  if (props.alwaysActive) return true
   if (props.player === undefined) return true
   if (!activeRun.value) return false
   if (!timer.value) return false
@@ -53,61 +59,27 @@ const winState = computed<"win" | "loss" | undefined>(() => {
   if (!oppTime || oppTime.state === "forfeit") return "win"
   return time.milliseconds < oppTime.milliseconds ? "win" : "loss"
 })
-
-const height = computed(() => props.inline ? "100%" : "unset")
 </script>
 
 <template>
-  <div class="another-container">
-    <div class="timer"
-      :class="[{ 'timer-out': !inline, 'timer-inline': inline, 'timer-hide': !active, 'manual-size': !dynamicWidth }, alignment ? `timer-${alignment}` : '', winState ? `timer-${winState}` : '', (player === undefined) ? `timer-state-${timer?.state ?? 'stopped'}` : '']">
-      <p class="nested" :class="{ 'nested-inline': inline }">{{ timeStr }}</p>
-    </div>
+  <div class="timer"
+    :class="[{ 'timer-hide': !active }, winState ? `timer-${winState}` : '', (player === undefined) ? `timer-state-${timer?.state ?? 'stopped'}` : '']">
+    <p class="nested">{{ timeStr }}</p>
   </div>
 </template>
 
 <style scoped>
-.another-container {
-  margin: 0;
-  padding: 0;
-  height: v-bind(height);
-  display: flex;
-  flex-flow: column nowrap;
-  justify-content: flex-end;
-}
-
 .timer {
+  @apply flex items-center justify-center;
+  /* TODO: transform */
   background-color: v-bind(bgColorDef);
   transition: opacity 0.2s;
   font-family: 'Ubuntu Mono';
   font-size: calc(4.3rem * v-bind(scale));
 }
 
-.manual-size {
-  width: fit-content;
-}
-
 .timer-hide {
   opacity: 0;
-}
-
-.timer-out {
-  height: 100%;
-}
-
-.timer-inline {
-  margin-top: auto;
-  margin-bottom: 0;
-}
-
-.timer-left {
-  margin-left: 0;
-  margin-right: auto;
-}
-
-.timer-right {
-  margin-left: auto;
-  margin-right: 0;
 }
 
 .timer-win {
@@ -119,15 +91,9 @@ const height = computed(() => props.inline ? "100%" : "unset")
 }
 
 .nested {
-  margin: 0;
-  padding-left: calc(1rem * v-bind(scale));
-  padding-right: calc(1rem * v-bind(scale));
+  display: inline-block;
   text-align: center;
-}
-
-.nested-inline {
-  padding-top: calc(0.5rem * v-bind(scale));
-  padding-bottom: calc(0.5rem * v-bind(scale));
+  line-height: 1;
 }
 
 .timer-state-stopped,
