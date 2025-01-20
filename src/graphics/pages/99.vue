@@ -67,9 +67,9 @@
       <div class="grid grid-cols-[1fr_1fr_1fr_1fr] basis-[1600px] items-stretch flex-shrink-0">
         <!-- TODO: Source Sans 3? -->
         <div class="flex justify-center items-center bg-pumpkin-200 text-black-100 text-5xl font-bold">my time</div>
-        <Timer :scale="0.9" :player="0" always-active />
+        <Timer :scale="0.9" :player="0" always-active bg-color="#251100" text-color="#FF7700" :goal="subathonGoal" /> <!-- bg-pumpkin-800 text-color-500 -->
         <div class="flex justify-center items-center bg-pumpkin-200 text-black-100 text-5xl font-bold">time to beat</div>
-        <Timer :scale="0.9" :custom-time="subathonGoal" always-active />
+        <Timer :scale="0.9" :custom-time="subathonGoal" always-active bg-color="#251100" text-color="#FF7700" /> <!-- bg-pumpkin-800 text-color-500 -->
       </div>
     </div>
     <!-- data container -->

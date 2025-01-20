@@ -1,8 +1,9 @@
 import { ref, onMounted, onUnmounted } from 'vue'
 import type { RunDataActiveRun } from 'nodecg-speedcontrol/src/types'
 import type { ReplicantBrowser } from 'nodecg/types/browser'
+import { createSharedComposable } from '@vueuse/core'
 
-export function useRun() {
+export const useRun = createSharedComposable(() => {
 	const activeRun = ref<RunDataActiveRun>()
 
 	function setActiveRun(newVal: RunDataActiveRun, oldVal: RunDataActiveRun) {
@@ -22,4 +23,4 @@ export function useRun() {
 	})
 
 	return { activeRun }
-}
+})

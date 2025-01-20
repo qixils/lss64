@@ -2,8 +2,10 @@ import { ref, onMounted, onUnmounted, computed } from 'vue'
 import type { ReplicantBrowser } from 'nodecg/types/browser'
 import type { SubathonState, Supporter } from '../../types'
 import { safeStringify } from '../utils/clone'
+import { createSharedComposable } from '@vueuse/core'
+import { timeToSeconds, timeToString } from './timer'
 
-export function useSubathon() {
+export const useSubathon = createSharedComposable(() => {
 	const subathon = ref<SubathonState | undefined>()
 
   // boilerplate
@@ -27,23 +29,10 @@ export function useSubathon() {
 
   // properties
 
-  const realSeconds = computed(() => {
-    const time = subathon.value?.goal ?? "09:59:59"
-    const [hours, minutes, seconds] = time.split(":").map(value => {
-      const conv = parseInt(value)
-      if (isNaN(conv)) return 0
-      return conv
-    })
-    return (((hours * 60) + minutes) * 60) + seconds
-  })
+  const realSeconds = computed(() => timeToSeconds(subathon.value?.goal || "09:59:59"))
   const displaySeconds = ref(0)
   const animatingFrom = ref(-1)
-  const goal = computed(() => {
-    const hours = Math.floor(displaySeconds.value / 3600)
-    const minutes = Math.floor((displaySeconds.value % 3600) / 60)
-    const seconds = displaySeconds.value % 60
-    return [hours, minutes, seconds].map(time => time.toFixed(0).padStart(2, "0")).join(":")
-  })
+  const goal = computed(() => timeToString({ seconds: displaySeconds.value }))
   const percentile = computed(() => subathon.value?.percentile ?? 99.9)
   const percentileStr = computed(() => percentile.value.toLocaleString(undefined, { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + '%')
   const supporters = computed<Supporter[]>((previous) => {
@@ -87,4 +76,4 @@ export function useSubathon() {
     subathonPercentileStr: percentileStr,
     subathonSupporters: supporters,
   }
-}
+})

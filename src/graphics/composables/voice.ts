@@ -1,8 +1,9 @@
 import { ref, onMounted, onUnmounted } from 'vue'
 import type { ReplicantBrowser } from 'nodecg/types/browser'
 import type { ChannelVoiceStatus } from '../../types'
+import { createSharedComposable } from '@vueuse/core'
 
-export function useVoice() {
+export const useVoice = createSharedComposable(() => {
 	const channelVoiceStatus = ref<ChannelVoiceStatus>({ users: {} })
 
 	function setActiveStatus(newVal: ChannelVoiceStatus, oldVal: ChannelVoiceStatus) {
@@ -22,4 +23,4 @@ export function useVoice() {
 	})
 
 	return { channelVoiceStatus }
-}
+})
