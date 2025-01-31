@@ -1,8 +1,10 @@
 <script setup lang="ts">
-import { until, whenever } from '@vueuse/core';
+import { until, useNow, whenever } from '@vueuse/core';
 import { onMounted, ref, useTemplateRef, watch } from 'vue';
+import { addSeconds, isAfter, isBefore, subDays, subSeconds } from 'date-fns';
 import { useRoyale } from '../composables/useRoyale';
 import { LobbyRoyaleUser } from '../../types';
+import '@types/twitch-browser'
 
 const classIndex = ["first", "second", "third", "fourth", "fifth"] as const
 const videos = useTemplateRef('videos')
@@ -13,28 +15,25 @@ type Stream = {
   index: StreamIndex,
   loadedAt: Date,
   user: LobbyRoyaleUser,
-  channel: string,
+  twitch?: Twitch.Player,
 }
 
 const activeStreams = ref<Stream[]>(classIndex.map(index => ({ index, loadedAt: new Date(3000, 12), channel: "", user: { ccUID: '', image: '', joinedAt: '', name: 'CrowdControl', originID: '', profile: 'twitch', score: 0 } })))
 
 onMounted(async () => {
-  const vidArr = await until(videos).toBeTruthy()
+  const vidArr = await until(videos).toMatch(v => !!v && v.length >= 5) ?? [] // please typescript
   classIndex.forEach((clazz, index) => vidArr[index].classList.add(clazz, "video"))
 
   watch(showing, (newValue, oldValue) => {
-    const newStreams: Stream[] = newValue.map((user, index) => ({
-      user,
-      index: classIndex[index],
-      channel: !user.originID
-        ? ''
-        : user.profile === 'twitch'
-          ? `https://player.twitch.tv/?channel=${user.name}&enableExtensions=false&muted=true&parent=twitch.tv&player=popout&quality=chunked&volume=1`
-          : user.profile === 'youtube'
-            ? '' // TODO
-            : '',
-      loadedAt: activeStreams.value.find(oldStream => user.ccUID === oldStream.user.ccUID)?.loadedAt ?? new Date(Date.now()),
-    }))
+    const newStreams: Stream[] = newValue.map((user, index) => {
+      const prevStream = activeStreams.value.find(stream => user.ccUID === stream.user.ccUID)
+      const loadedAt = prevStream?.loadedAt ?? new Date(Date.now())
+      return {
+        user,
+        index: classIndex[index],
+        loadedAt,
+      } as Stream
+    })
 
     // match channels with existing slots
     const sortedStreams: (Stream | undefined)[] = classIndex.map(index => undefined)
@@ -55,34 +54,59 @@ onMounted(async () => {
 
     const finalStreams = sortedStreams as Stream[]
 
-    // perform class swaps
+    // perform class swaps & iframe updates
     for (let i = 0; i < classIndex.length; i++) {
-      const oldClass = activeStreams.value[i].index
-      const newClass = finalStreams[i].index
+      const oldv = activeStreams.value[i]
+      const newv = finalStreams[i]
 
-      if (oldClass !== newClass) {
-        vidArr[i].classList.add(newClass)
-        vidArr[i].classList.remove(oldClass)
+      if (oldv.index !== newv.index) {
+        vidArr[i].classList.add(newv.index)
+        vidArr[i].classList.remove(oldv.index)
+      }
+
+      if (newv.user.profile === 'twitch') {
+        let twitch: Twitch.Player
+        if (oldv.twitch) {
+          twitch = oldv.twitch
+          if (newv.user.name !== oldv.user.name) {
+            twitch.setChannel(newv.user.name)
+          }
+        } else {
+          twitch = new Twitch.Player(`embed-${i}`, {
+            height: "100%",
+            width: "100%",
+            parent: ["localhost"],
+            channel: newv.user.name,
+            autoplay: true,
+          })
+        }
+        twitch.setMuted(newv.index !== 'first')
+        newv.twitch = twitch
+      } else {
+        newv.twitch = undefined
+        const container = vidArr[i].querySelector(".embed-container")
+        if (container) container.innerHTML = '' // TODO
       }
     }
 
     // finish
     activeStreams.value = [...finalStreams]
-
-    // TODO: manage audio
   })
 })
+
+const now = useNow({ interval: 100 })
 </script>
 
 <template>
   <div class="royale">
     <div class="videos absolute">
-      <div v-for="stream in activeStreams" ref="videos">
+      <div v-for="(stream, index) in activeStreams" ref="videos">
+        <div class="embed-container" :id="`embed-${index}`"></div>
+        <div class="obscure inset-0 bg-[hsla(250,42%,11%,1)] transition-opacity duration-500" :style="`opacity: ${isAfter(now, addSeconds(stream.loadedAt, 5)) ? '100' : '0'}%`"></div>
         <div class="streamer">
           <!-- todo: platform icon -->
           <p>{{ stream.user.name }}</p>
         </div>
-        <iframe class="size-full border-none"></iframe>
       </div>
     </div>
 
@@ -144,12 +168,18 @@ onMounted(async () => {
   transition-timing-function: cubic-bezier(.77,0,.18,1);
 }
 
-.video {
+.video, .embed-container, .obscure, iframe {
+  border-radius: 10px;
+}
+
+.video, .obscure {
   position: absolute;
+  background-color: hsla(250, 42%, 11%, 1);
+}
+
+.video {
   box-shadow: 0px 0px var(--glow-size, 8.1px) 0px var(--video-color, hsla(320, 7%, 98%, 1));
   border: 2px solid var(--video-color);
-  border-radius: 10px;
-  background-color: hsla(250, 42%, 11%, 1);
 }
 .first {
   --video-color: hsla(320, 7%, 98%, 1);
@@ -190,7 +220,13 @@ onMounted(async () => {
   --index: 3;
 }
 
+.embed-container {
+  position: absolute;
+  inset: 0;
+}
+
 .streamer {
+  position: absolute;
   line-height: 1;
   border-radius: 39.29px 17.29px 47.15px 39.29px;
   border-color: var(--video-color, hsla(320, 7%, 98%, 1));

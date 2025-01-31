@@ -18,7 +18,10 @@ export default defineNuxtConfig({
 				{ rel: "preconnect", href: "https://fonts.googleapis.com" },
 				{ rel: "preconnect", href: "https://fonts.gstatic.com", crossorigin: "" },
 				{ rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Ubuntu+Mono&display=swap" }
-			]
-		}
-	}
+			],
+      script: [
+        { src: 'https://player.twitch.tv/js/embed/v1.js' },
+      ],
+		},
+	},
 })
