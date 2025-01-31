@@ -10,6 +10,7 @@
 		},
 		"types": [
 			"../../types/browser.d.ts" // Specify the path to your declaration file
-		]
+		],
+		"strict": true
 	}
 }

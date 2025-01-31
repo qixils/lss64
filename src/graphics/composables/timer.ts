@@ -2,6 +2,7 @@ import { ref, onMounted, onUnmounted } from 'vue'
 import type { Timer } from 'nodecg-speedcontrol/src/types'
 import type { ReplicantBrowser } from 'nodecg/types/browser'
 import { createSharedComposable } from '@vueuse/core'
+import { replicant } from '../../browser/utils/replicant'
 
 interface Duration {
   weeks?: number
@@ -48,23 +49,7 @@ export const timeToString = (duration: Duration) => {
 }
 
 export const useTimer = createSharedComposable(() => {
-	const timer = ref<Timer | undefined>()
-
-	function setActiveTimer(newVal: Timer | undefined, oldVal: Timer | undefined) {
-		if (!newVal) return
-		timer.value = { ...newVal }
-	}
-
-	let listener: ReplicantBrowser<Timer>
-
-	onMounted(() => {
-		listener = nodecg.Replicant('timer', 'nodecg-speedcontrol')
-		listener.on('change', setActiveTimer)
-	})
-
-	onUnmounted(() => {
-		if (listener) listener.off('change', setActiveTimer)
-	})
+	const timer = replicant<Timer>('timer@nodecg-speedcontrol')
 
 	return {
     timer,

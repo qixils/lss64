@@ -4,28 +4,10 @@ import type { SubathonState, Supporter } from '../../types'
 import { safeStringify } from '../utils/clone'
 import { createSharedComposable } from '@vueuse/core'
 import { timeToSeconds, timeToString } from './timer'
+import { replicant } from '../../browser/utils/replicant'
 
 export const useSubathon = createSharedComposable(() => {
-	const subathon = ref<SubathonState | undefined>()
-
-  // boilerplate
-
-	function setActiveSubathon(newVal: SubathonState | undefined, oldVal: SubathonState | undefined) {
-    console.log("subathon update", newVal, oldVal)
-    if (safeStringify(newVal) === safeStringify(subathon.value)) return
-		subathon.value = newVal ? { ...newVal } : undefined
-	}
-
-	let listener: ReplicantBrowser<SubathonState>
-
-	onMounted(() => {
-		listener = nodecg.Replicant('subathonState')
-		listener.on('change', setActiveSubathon)
-	})
-
-	onUnmounted(() => {
-		if (listener) listener.off('change', setActiveSubathon)
-	})
+	const subathon = replicant<SubathonState>('subathonState')
 
   // properties
 

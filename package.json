@@ -27,7 +27,8 @@
     "nuxt": "^3.9.3",
     "typescript": "^5.3.3",
     "vue": "^3.4.14",
-    "vue-router": "^4.2.5"
+    "vue-router": "^4.2.5",
+    "zod": "^3.24.1"
   },
   "overrides": {
     "@parcel/watcher": "2.1.0"
@@ -67,6 +68,11 @@
         "file": "commentators.html",
         "width": 650,
         "height": 230
+      },
+      {
+        "file": "royale.html",
+        "width": 1920,
+        "height": 1080
       }
     ],
     "dashboardPanels": []
