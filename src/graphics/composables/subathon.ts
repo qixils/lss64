@@ -1,9 +1,9 @@
 import { ref, onMounted, onUnmounted, computed } from 'vue'
 import type { ReplicantBrowser } from 'nodecg/types/browser'
 import type { SubathonState, Supporter } from '../../types'
-import { safeStringify } from '../utils/clone'
 import { createSharedComposable } from '@vueuse/core'
 import { timeToSeconds, timeToString } from './timer'
+import { safeStringify } from '../../browser/utils/clone'
 import { replicant } from '../../browser/utils/replicant'
 
 export const useSubathon = createSharedComposable(() => {

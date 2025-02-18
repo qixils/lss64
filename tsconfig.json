@@ -9,7 +9,8 @@
 			]
 		},
 		"types": [
-			"../../types/browser.d.ts" // Specify the path to your declaration file
+			"../../types/browser.d.ts", // Specify the path to your declaration file
+			"twitch-browser"
 		],
 		"strict": true
 	}

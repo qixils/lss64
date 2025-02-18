@@ -4,7 +4,7 @@ import { onMounted, ref, useTemplateRef, watch } from 'vue';
 import { addSeconds, isAfter, isBefore, subDays, subSeconds } from 'date-fns';
 import { useRoyale } from '../composables/useRoyale';
 import { LobbyRoyaleUser } from '../../types';
-import '@types/twitch-browser'
+import { useRun } from '../composables/run';
 
 // https://developers.google.com/youtube/iframe_api_reference
 declare namespace YT {
@@ -77,7 +77,9 @@ declare namespace YT {
 
 const classIndex = ["first", "second", "third", "fourth", "fifth"] as const
 const videos = useTemplateRef('videos')
+const star = useTemplateRef('star')
 const { showing } = useRoyale()
+const { activeRun } = useRun()
 
 type StreamIndex = (typeof classIndex)[number]
 type Stream = {
@@ -88,7 +90,7 @@ type Stream = {
   youtube?: YT.Player,
 }
 
-const activeStreams = ref<Stream[]>(classIndex.map(index => ({ index, loadedAt: new Date(3000, 12), channel: "", user: { ccUID: '', image: '', joinedAt: '', name: 'CrowdControl', originID: '', profile: 'twitch', score: 0 } })))
+const activeStreams = ref<Stream[]>(classIndex.map(index => ({ index, loadedAt: new Date(3000, 12), channel: "", user: { ccUID: '', image: '', joinedAt: '', name: 'CrowdControl', originID: '', profile: 'twitch', score: 0, channel: 'CrowdControl' } })))
 
 onMounted(async () => {
   const vidArr = await until(videos).toMatch(v => !!v && v.length >= 5) ?? [] // please typescript
@@ -197,6 +199,13 @@ onMounted(async () => {
     // finish
     activeStreams.value = [...finalStreams]
   })
+
+  const starEl = await until(star).toBeTruthy()
+  let on = false;
+  setInterval(function () {
+    starEl.setAttribute('data-animation', (on) ? 'on' : '');
+    on = !on;
+  }, 2500);
 })
 
 const now = useNow({ interval: 100 })
@@ -209,7 +218,8 @@ const now = useNow({ interval: 100 })
         <div class="embed-container" :id="`embed-${index}`"></div>
         <div class="obscure inset-0 bg-[hsla(250,42%,11%,1)] transition-opacity duration-500" :style="`opacity: ${isAfter(now, addSeconds(stream.loadedAt, 5)) ? '100' : '0'}%`"></div>
         <div class="streamer">
-          <!-- todo: platform icon -->
+          <svg v-if="stream.user.profile === 'twitch'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M391.17 103.47h-38.63v109.7h38.63ZM285 103h-38.63v109.75H285ZM120.83 0L24.31 91.42v329.16h115.83V512l96.53-91.42h77.25L487.69 256V0Zm328.24 237.75l-77.22 73.12h-77.24l-67.6 64v-64h-86.87V36.58h308.93Z"/></svg>
+          <svg v-else-if="stream.user.profile === 'youtube'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path fill="currentColor" d="M549.655 124.083c-6.281-23.65-24.787-42.276-48.284-48.597C458.781 64 288 64 288 64S117.22 64 74.629 75.486c-23.497 6.322-42.003 24.947-48.284 48.597c-11.412 42.867-11.412 132.305-11.412 132.305s0 89.438 11.412 132.305c6.281 23.65 24.787 41.5 48.284 47.821C117.22 448 288 448 288 448s170.78 0 213.371-11.486c23.497-6.321 42.003-24.171 48.284-47.821c11.412-42.867 11.412-132.305 11.412-132.305s0-89.438-11.412-132.305m-317.51 213.508V175.185l142.739 81.205z"/></svg>
           <p>{{ stream.user.name }}</p>
         </div>
       </div>
@@ -230,13 +240,15 @@ const now = useNow({ interval: 100 })
       <div class="bottom-bar">
         <!-- left -->
         <div class="flex flex-row justify-start items-center gap-2">
+          <!--
           <svg class="star" width="37" height="35" viewBox="0 0 37 35" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M16.2325 1.32181L12.3108 10.4487L2.5683 12.3945C0.821108 12.7421 0.229286 14.9496 1.57119 16.1258L9.03668 22.6749L7.86915 32.5402C7.65938 34.3233 9.59013 35.5496 11.1058 34.6413L19.6465 29.5646L28.6712 33.7208C30.2731 34.4589 32.0655 33.0443 31.6705 31.2928L29.4781 21.6036L36.2182 14.3101C37.4298 13 36.6104 10.8665 34.8365 10.7034L24.9439 9.78664L20.0897 1.11967C19.2204 -0.424988 16.9413 -0.325763 16.2325 1.32181Z" fill="white"/>
           </svg>
+          -->
+          <div class="star" ref="star"></div>
           <p class="font-extrabold text-[32px] text-[hsla(320,7%,98%,1)] leading-none">
             PLAYERS' OBJECTIVE:
-            <!-- todo: nodecg game -->
-            <span class="font-bold text-[hsla(240,26%,74%,1)] uppercase">COLLECT 30 STARS</span>
+            <span class="font-bold text-[hsla(240,26%,74%,1)] uppercase">{{ activeRun?.category || "N/A" }}</span>
           </p>
         </div>
         <div class="flex flex-col justify-evenly items-end gap-0.5">
@@ -268,7 +280,7 @@ const now = useNow({ interval: 100 })
 }
 
 .video, .streamer {
-  transition-property: inset, box-shadow, border, width, height, padding, font-size;
+  transition-property: inset, box-shadow, border, width, height, padding, font-size, gap;
   transition-duration: 0.5s;
   transition-timing-function: cubic-bezier(.77,0,.18,1);
 }
@@ -344,24 +356,46 @@ const now = useNow({ interval: 100 })
   right: var(--margin);
   display: flex;
   flex-direction: row;
-  gap: 0.125rem;
+  align-items: center;
+  font-size: var(--text-size);
 }
 .first .streamer {
-  font-size: 30px;
+  --text-size: 30px;
   padding: 0.8rem 1.6rem;
   border-width: 2px;
   --margin: 1rem;
+  gap: 0.4rem;
 }
 .second .streamer, .third .streamer, .fourth .streamer, .fifth .streamer {
-  font-size: 15px;
+  --text-size: 15px;
   padding: 0.5rem 1rem;
   border-width: 1px;
   --margin: 0.5rem;
+  gap: 0.2rem;
+}
+.streamer svg {
+  width: calc(var(--text-size) * (4/5));
+  aspect-ratio: 1 / 1;
 }
 
 .star {
   animation: 4s ease-in-out 0s infinite rotate;
+  width: 37px;
+  height: 35px;
+  clip-path: path("M16.2325 1.32181L12.3108 10.4487L2.5683 12.3945C0.821108 12.7421 0.229286 14.9496 1.57119 16.1258L9.03668 22.6749L7.86915 32.5402C7.65938 34.3233 9.59013 35.5496 11.1058 34.6413L19.6465 29.5646L28.6712 33.7208C30.2731 34.4589 32.0655 33.0443 31.6705 31.2928L29.4781 21.6036L36.2182 14.3101C37.4298 13 36.6104 10.8665 34.8365 10.7034L24.9439 9.78664L20.0897 1.11967C19.2204 -0.424988 16.9413 -0.325763 16.2325 1.32181Z");
+  background-color: white;
+  scale: 80%;
+  /*
+  background: linear-gradient(-65deg, #FFF 43%, #FF5 50%, #FFF 57%);
+  background-size: 250% auto;
+  background-position: 300% center;
+  */
 }
+/*
+.star[data-animation="on"] {
+  animation: 4s ease-in-out 0s infinite rotate, 0.75s ease-in 0s 1 shine;
+}
+*/
 
 @keyframes rotate {
   0%, 100% {
@@ -370,6 +404,15 @@ const now = useNow({ interval: 100 })
 
   50% {
     transform: rotate(10deg);
+  }
+}
+
+@keyframes shine {
+  from {
+    background-position: 100% center;
+  }
+  to {
+    background-position: -52% center;
   }
 }
 </style>
