@@ -8,6 +8,7 @@ export const LobbyRoyaleUserSchema = z.object({
   joinedAt: z.string(),
   profile: z.enum(['twitch', 'youtube']),
   originID: z.string(),
+  channel: z.string(),
 })
 
 export type LobbyRoyaleUser = z.output<typeof LobbyRoyaleUserSchema>

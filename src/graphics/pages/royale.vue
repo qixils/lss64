@@ -6,6 +6,75 @@ import { useRoyale } from '../composables/useRoyale';
 import { LobbyRoyaleUser } from '../../types';
 import '@types/twitch-browser'
 
+// https://developers.google.com/youtube/iframe_api_reference
+declare namespace YT {
+  interface PlayerOptions {
+    width: string
+    height: string
+    videoId: string
+    playerVars?: {
+      // https://developers.google.com/youtube/player_parameters
+      autoplay?: 0 | 1
+      controls?: 0 | 1
+    }
+    events?: {
+      onReady?: (event: Event & { target: YT.Player }) => void
+      onError?: (event: { data: 2 | 5 | 100 | 101 | 150 }) => void
+    }
+  }
+  interface TimedOptions {
+    startSeconds?: number
+    endSeconds?: number
+  }
+  interface ByIdOptions extends TimedOptions {
+    videoId: string
+  }
+  interface ByUrlOptions extends TimedOptions {
+    mediaContentUrl: string
+  }
+  class Player {
+    constructor(element: HTMLElement | string, options: PlayerOptions)
+    /**
+     * Prepares a video by its ID without playing it.
+     */
+    cueVideoById(options: ByIdOptions): void
+    cueVideoById(videoId: string, startSeconds?: number): void
+    /**
+     * Prepares and plays a video by its ID.
+     */
+    loadVideoById(options: ByIdOptions): void
+    loadVideoById(videoId: string, startSeconds?: number): void
+    /**
+     * Prepares a video by its URL without playing it.
+     */
+    cueVideoByUrl(options: ByUrlOptions): void
+    cueVideoByUrl(mediaContentUrl: string, startSeconds?: number): void
+    /**
+     * Prepares and plays a video by its URL.
+     */
+    loadVideoByUrl(options: ByUrlOptions): void
+    loadVideoByUrl(mediaContentUrl: string, startSeconds?: number): void
+
+    playVideo(): void
+    pauseVideo(): void
+    stopVideo(): void
+    seekTo(seconds: number, allowSeekAhead: boolean): void
+    mute(): void
+    unMute(): void
+    isMuted(): boolean
+    setVolume(volume: number): void
+    getVolume(volume: number): void
+    setSize(width: number, height: number): object
+    getPlaybackRate(): number
+    setPlaybackRate(suggestedRate: number): void
+    getAvailablePlaybackRates(): number[]
+    /**
+     * Removes the `<iframe>` containing the player.
+     */
+    destroy(): void
+  }
+}
+
 const classIndex = ["first", "second", "third", "fourth", "fifth"] as const
 const videos = useTemplateRef('videos')
 const { showing } = useRoyale()
@@ -16,6 +85,7 @@ type Stream = {
   loadedAt: Date,
   user: LobbyRoyaleUser,
   twitch?: Twitch.Player,
+  youtube?: YT.Player,
 }
 
 const activeStreams = ref<Stream[]>(classIndex.map(index => ({ index, loadedAt: new Date(3000, 12), channel: "", user: { ccUID: '', image: '', joinedAt: '', name: 'CrowdControl', originID: '', profile: 'twitch', score: 0 } })))
@@ -64,28 +134,63 @@ onMounted(async () => {
         vidArr[i].classList.remove(oldv.index)
       }
 
+      if (newv.user.profile !== 'youtube' && oldv.youtube) {
+        oldv.youtube.destroy()
+        oldv.youtube = undefined
+      }
+
       if (newv.user.profile === 'twitch') {
         let twitch: Twitch.Player
+
         if (oldv.twitch) {
           twitch = oldv.twitch
-          if (newv.user.name !== oldv.user.name) {
-            twitch.setChannel(newv.user.name)
+          if (newv.user.channel !== oldv.user.channel) {
+            twitch.setChannel(newv.user.channel)
           }
         } else {
           twitch = new Twitch.Player(`embed-${i}`, {
             height: "100%",
             width: "100%",
             parent: ["localhost"],
-            channel: newv.user.name,
+            channel: newv.user.channel,
             autoplay: true,
           })
         }
+
         twitch.setMuted(newv.index !== 'first')
+
         newv.twitch = twitch
+        newv.youtube = undefined
+      } else if (newv.user.profile === 'youtube') {
+        let youtube: YT.Player
+
+        if (oldv.youtube) {
+          youtube = oldv.youtube
+          if (newv.user.channel !== oldv.user.channel) {
+            youtube.loadVideoById(newv.user.channel)
+          }
+        } else {
+          youtube = new YT.Player(`embed-${i}`, {
+            height: "100%",
+            width: "100%",
+            playerVars: {
+              autoplay: 1,
+              controls: 0,
+            },
+            videoId: newv.user.channel,
+          })
+        }
+
+        if (newv.index === 'first') youtube.unMute()
+        else youtube.mute()
+
+        newv.twitch = undefined
+        newv.youtube = youtube
       } else {
         newv.twitch = undefined
+        newv.youtube = undefined
         const container = vidArr[i].querySelector(".embed-container")
-        if (container) container.innerHTML = '' // TODO
+        if (container) container.innerHTML = '' // TODO i don't think this is really right
       }
     }
 

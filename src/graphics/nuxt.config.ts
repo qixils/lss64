@@ -21,6 +21,7 @@ export default defineNuxtConfig({
 			],
       script: [
         { src: 'https://player.twitch.tv/js/embed/v1.js' },
+        { src: 'https://www.youtube.com/iframe_api' },
       ],
 		},
 	},
