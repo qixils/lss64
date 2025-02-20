@@ -226,13 +226,21 @@ const now = useNow({ interval: 100 })
     </div>
 
     <div class="content flex flex-col">
-      <div class="flex-1 m-[13px] pt-[832.25px] pr-[438.44px] flex flex-row justify-between items-stretch">
+      <div class="flex-1 m-[13px] pt-[832.25px] pr-[438.44px] flex flex-row justify-between">
         <!-- Crowd Control Lobby Royale -->
-        <div class="flex flex-col">
-          <p>crowd control lobby royale man</p>
+        <div class="self-center h-32 flex flex-row items-stretch gap-4">
+          <img src="~/public/CrowdControlLogo.svg" class="h-full w-auto aspect-square" />
+          <div class="flex flex-col gap-3 justify-center items-start">
+            <img src="~/public/CrowdControlText.svg" class="h-6 object-left object-contain drop-shadow-[0_0_0.1rem_#cdcde9]" />
+            <!-- <img src="~/public/LobbyRoyaleText2.svg" class="h-[4.7rem] object-left object-contain" /> -->
+            <p class="cc-royale-text">
+              <span class="-mr-0.5">L</span><span>O</span><span>B</span><span>B</span><span class="-ml-0.5 mr-4">Y</span>
+              <span>R</span><span>O</span><span class="-ml-1 -mr-2">Y</span><span>A</span><span>L</span><span>E</span>
+            </p>
+          </div>
         </div>
         <!-- Commentators -->
-        <div class="flex flex-col justify-evenly">
+        <div class="self-stretch flex flex-col justify-evenly">
           <p>im commentating yo</p>
         </div>
       </div>
@@ -270,6 +278,8 @@ const now = useNow({ interval: 100 })
 
 .royale {
   background-image: url("~/public/royale.png");
+  background-size: cover;
+  background-position: center;
   font-family: 'Poppins', sans-serif;
 }
 
@@ -396,6 +406,30 @@ const now = useNow({ interval: 100 })
   animation: 4s ease-in-out 0s infinite rotate, 0.75s ease-in 0s 1 shine;
 }
 */
+
+.cc-royale-text {
+  @apply text-[4.7rem] leading-none font-[950] uppercase -mt-2 -mb-3;
+  /* letter-spacing: 0.1rem; */
+  font-kerning: auto;
+}
+.cc-royale-text span {
+  -webkit-text-fill-color: transparent;
+  -webkit-text-stroke-width: 1px;
+  -webkit-text-stroke-color: var(--span-color);
+  filter: drop-shadow(0 0 0.3rem var(--span-color));
+}
+.cc-royale-text span:nth-child(4n+1) {
+  --span-color: hsla(54, 100%, 62%, 1);
+}
+.cc-royale-text span:nth-child(4n+2) {
+  --span-color: hsla(351, 92%, 62%, 1);
+}
+.cc-royale-text span:nth-child(4n+3) {
+  --span-color: hsla(169, 77%, 50%, 1);
+}
+.cc-royale-text span:nth-child(4n) {
+  --span-color: hsla(240, 100%, 70%, 1);
+}
 
 @keyframes rotate {
   0%, 100% {
