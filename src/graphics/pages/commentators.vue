@@ -7,23 +7,15 @@ import { useVoice } from '../composables/voice';
 import { UserVoiceStatus } from '../../types';
 
 const { activeRun } = useRun()
-const { channelVoiceStatus } = useVoice()
-
-const commentators = computed<RunDataCommentator[]>(() => activeRun.value?.commentators ?? activeRun.value?.teams?.find(team => team.name === "Commentators")?.players ?? [])
-
-function getVoiceStatus(commentator: RunDataCommentator): UserVoiceStatus | undefined {
-  const discord = commentator.customData.discord
-  if (!discord) return;
-  return channelVoiceStatus.value.users[discord]
-}
+const { commentators } = useVoice()
 </script>
 
 <template>
   <TransitionGroup class="commentator-container" name="commentator-container" tag="div">
     <div class="commentator" v-for="commentator in commentators" :key="commentator.id">
       <img
-        :src="getVoiceStatus(commentator)?.pfp ?? 'https://cdn.jsdelivr.net/gh/jdecked/twemoji@latest/assets/72x72/1f399.png'"
-        :class="{ active: getVoiceStatus(commentator)?.speaking, pfp: getVoiceStatus(commentator)?.pfp }">
+        :src="commentator.discord?.pfp ?? 'https://cdn.jsdelivr.net/gh/jdecked/twemoji@latest/assets/72x72/1f399.png'"
+        :class="{ active: commentator.discord?.speaking, pfp: commentator.discord?.pfp }">
       <PlayerName :scale="0.85" :player="commentator" />
     </div>
   </TransitionGroup>

@@ -5,6 +5,7 @@ import { addSeconds, isAfter, isBefore, subDays, subSeconds } from 'date-fns';
 import { useRoyale } from '../composables/useRoyale';
 import { LobbyRoyaleUser } from '../../types';
 import { useRun } from '../composables/run';
+import { useVoice } from '../composables/voice';
 
 // https://developers.google.com/youtube/iframe_api_reference
 declare namespace YT {
@@ -80,6 +81,7 @@ const videos = useTemplateRef('videos')
 const star = useTemplateRef('star')
 const { showing } = useRoyale()
 const { activeRun } = useRun()
+const { commentators } = useVoice()
 
 type StreamIndex = (typeof classIndex)[number]
 type Stream = {
@@ -230,18 +232,32 @@ const now = useNow({ interval: 100 })
         <!-- Crowd Control Lobby Royale -->
         <div class="self-center h-32 flex flex-row items-stretch gap-4">
           <img src="~/public/CrowdControlLogo.svg" class="h-full w-auto aspect-square" />
-          <div class="flex flex-col gap-3 justify-center items-start">
-            <img src="~/public/CrowdControlText.svg" class="h-6 object-left object-contain drop-shadow-[0_0_0.1rem_#cdcde9]" />
-            <!-- <img src="~/public/LobbyRoyaleText2.svg" class="h-[4.7rem] object-left object-contain" /> -->
-            <p class="cc-royale-text">
+          <div class="flex flex-col gap-1 justify-center items-start">
+            <img src="~/public/CrowdControlText.svg" class="ml-[0.4rem] h-6 object-left object-contain drop-shadow-[0_0_0.1rem_#cdcde9]" />
+            <img src="~/public/LobbyRoyaleText.webp" class="h-[4.7rem] object-left object-contain" />
+            <!-- <p class="cc-royale-text">
               <span class="-mr-0.5">L</span><span>O</span><span>B</span><span>B</span><span class="-ml-0.5 mr-4">Y</span>
               <span>R</span><span>O</span><span class="-ml-1 -mr-2">Y</span><span>A</span><span>L</span><span>E</span>
-            </p>
+            </p> -->
           </div>
         </div>
         <!-- Commentators -->
-        <div class="self-stretch flex flex-col justify-evenly">
-          <p>im commentating yo</p>
+        <div class="self-stretch flex flex-col justify-evenly items-end">
+          <div v-for="commentator in commentators" :id="commentator.id" class="flex flex-row items-stretch h-11 w-max">
+            <div
+              class="rounded-l-full bg-[hsla(239,25%,17%,1)] h-full w-auto aspect-square"
+            >
+              <img
+                :src="commentator.discord?.pfp || 'Ghost.png'"
+                class="rounded-full bg-[#2d304c] h-full w-auto aspect-square outline outline-2 -outline-offset-2"
+                :class="[commentator.discord?.speaking ? 'outline-[hsla(54,100%,62%,1)]' : 'outline-transparent']"
+              />
+            </div>
+            <div class="rounded-r-2xl bg-[hsla(239,25%,17%,1)] flex flex-row gap-2 px-2 items-center w-max">
+              <p class="font-bold text-2xl leading-none text-[hsla(320,7%,98%,1)]">{{ commentator.name }}</p>
+              <p v-if="commentator.pronouns" class="font-medium text-xl leading-none text-[hsla(240,39%,86%,1)] lowercase">{{ commentator.pronouns.replace(/\s*\/\s*/, ' • ') }}</p>
+            </div>
+          </div>
         </div>
       </div>
       <!-- bottom bar -->
@@ -261,7 +277,7 @@ const now = useNow({ interval: 100 })
         </div>
         <div class="flex flex-col justify-evenly items-end gap-0.5">
           <p class="text-base font-bold text-[hsla(240,26%,74%,1)] leading-none">LOBBY CODE</p>
-          <p class="text-2xl font-extrabold text-[hsla(320,7%,98%,1)] leading-none uppercase">5MMF9E9C</p>
+          <p class="cc-lobby-code">5MMF9E9C</p>
         </div>
       </div>
     </div>
@@ -406,6 +422,11 @@ const now = useNow({ interval: 100 })
   animation: 4s ease-in-out 0s infinite rotate, 0.75s ease-in 0s 1 shine;
 }
 */
+
+.cc-lobby-code {
+  @apply text-2xl font-extrabold text-[hsla(320,7%,98%,1)] leading-none uppercase;
+  letter-spacing: 0.25rem;
+}
 
 .cc-royale-text {
   @apply text-[4.7rem] leading-none font-[950] uppercase -mt-2 -mb-3;
